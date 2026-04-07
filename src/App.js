@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
-
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 function App() {
+
+  const [products, Setproducts] = useState([])
+  const [search, SetSearch] = useState('')
+
+  const getallproducts = async () => {
+    try {
+
+      const response = await axios.get("https://fakestoreapi.com/products")
+      Setproducts(response.data)
+      console.log(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+  useEffect(() => {
+    getallproducts()
+  }, [])
+
+
+
+
+  const filterProducts = products.filter((val) => {
+    return val.title.toLowerCase().includes(search.toLowerCase())
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+
+      <input placeholder='search here...' value={search} onChange={(e) => SetSearch(e.target.value)} />
+
+      {
+
+        filterProducts?.map((val, idx) => {
+
+          return (
+            <>
+              <h6 key={idx}>{val.title}</h6>
+            </>
+          )
+        })
+      }
+
+
     </div>
   );
 }
